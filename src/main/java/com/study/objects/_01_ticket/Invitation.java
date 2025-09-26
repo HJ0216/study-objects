@@ -4,6 +4,6 @@ import java.time.LocalDateTime;
 
 public class Invitation {
 
-  private LocalDateTime when;
+  private LocalDateTime when = LocalDateTime.of(2025, 01, 01, 9, 0);
 
 }

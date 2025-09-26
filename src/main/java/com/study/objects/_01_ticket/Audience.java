@@ -1,6 +1,5 @@
 package com.study.objects._01_ticket;
 
-import lombok.Getter;
 import lombok.RequiredArgsConstructor;
 
 @RequiredArgsConstructor
