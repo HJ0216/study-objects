@@ -1,25 +1,27 @@
 package com.study.objects._01_ticket;
 
 import lombok.Getter;
-import lombok.Setter;
 
 public class Bag {
 
   @Getter
   private Long amount;
   private Invitation invitation;
-  @Setter
   private Ticket ticket;
 
   public Long hold(Ticket ticket) {
+    setTicket(ticket);
+
     if (hasInvitation()) {
-      setTicket(ticket);
       return 0L;
     } else {
       minusAmount(ticket.getFee());
-      setTicket(ticket);
       return ticket.getFee();
     }
+  }
+
+  private void setTicket(Ticket ticket) {
+    this.ticket = ticket;
   }
 
   private boolean hasInvitation() {

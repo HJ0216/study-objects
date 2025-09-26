@@ -34,7 +34,7 @@ class BagTest {
 
     @Nested
     @DisplayName("초대장이 없으면")
-    class Context_without_inviatation {
+    class Context_without_invitation {
 
       @Test
       @DisplayName("티켓 요금을 반환한다")

@@ -1,17 +1,18 @@
 package com.study.objects._01_ticket;
 
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.List;
+import java.util.ArrayDeque;
+import java.util.Deque;
 
 public class TicketOffice {
 
   private Long amount;
-  private List<Ticket> tickets = new ArrayList<>();
+  private Deque<Ticket> tickets = new ArrayDeque<>();
 
   public TicketOffice(Long amount, Ticket... tickets) {
     this.amount = amount;
-    this.tickets.addAll(Arrays.asList(tickets));
+    for (Ticket ticket : tickets) {
+      this.tickets.addLast(ticket);
+    }
   }
 
   public void sellTicketTo(Audience audience) {
@@ -19,7 +20,7 @@ public class TicketOffice {
   }
 
   public Ticket getTicket() {
-    return tickets.remove(0);
+    return tickets.pollFirst();
   }
 
   public void plusAmount(Long amount) {
