@@ -4,7 +4,6 @@ import java.time.DayOfWeek;
 import java.time.Duration;
 import java.time.LocalTime;
 import lombok.AllArgsConstructor;
-import lombok.RequiredArgsConstructor;
 
 @AllArgsConstructor
 public class Movie {
@@ -14,7 +13,7 @@ public class Movie {
   private Money fee;
   private DiscountPolicy discountPolicy;
 
-  public void changeDiscountPolicy(DiscountPolicy discountPolicy){
+  public void changeDiscountPolicy(DiscountPolicy discountPolicy) {
     this.discountPolicy = discountPolicy;
   }
 
@@ -30,7 +29,7 @@ public class Movie {
     return fee.minus(discountPolicy.calculateDiscountAmount(screening));
   }
 
-  public Movie getAvatar() {
+  public static Movie getAvatar() {
     return new Movie(
         "Avatar",
         Duration.ofMinutes(120),
@@ -43,7 +42,7 @@ public class Movie {
             new PeriodCondition(DayOfWeek.THURSDAY, LocalTime.of(10, 0), LocalTime.of(20, 59))));
   }
 
-  public Movie getTitanic() {
+  public static Movie getTitanic() {
     return new Movie(
         "Titanic",
         Duration.ofMinutes(180),
@@ -55,7 +54,7 @@ public class Movie {
             new PeriodCondition(DayOfWeek.THURSDAY, LocalTime.of(10, 0), LocalTime.of(13, 59))));
   }
 
-  public Movie getStarWars(){
+  public static Movie getStarWars() {
     return new Movie(
         "StarWars",
         Duration.ofMinutes(210),

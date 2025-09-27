@@ -1,13 +1,14 @@
 package com.study.objects._02_movie;
 
 import java.math.BigDecimal;
+import lombok.Getter;
 import lombok.RequiredArgsConstructor;
 
 @RequiredArgsConstructor
 public class Money {
 
   public static final Money ZERO = Money.wons(0);
-
+  @Getter
   private final BigDecimal amount;
 
   public static Money wons(long amount) {
