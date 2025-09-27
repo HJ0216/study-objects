@@ -23,5 +23,27 @@
 * 의미를 좀 더 명시적이고 분명하게 표현할 수 있다면 객체를 사용해서 해당 개념을 구현하라.
 * 그 개념이 비록 하나의 인스턴스 변수만 포함하더라도 개념을 명시적으로 표현하는 것은 전체적인 설계의 명확성과 유연성을 높인다.
 * template design pattern: 부모 클래스에 기본적인 알고리즘을 구현하고 중간에 필요한 처리를 자식 클래스에 위임하는 디자인 패턴
-* 
+```java
+public class Movie {
+
+  public Money calculateMovieFee(Screening screening) {
+    if (discountPolicy == null) {
+      return fee;
+    }
+
+    return fee.minus(discountPolicy.calculateDiscountAmount(screening));
+  }
+}
+// 기존 할인 정책의 경우에는 할인할 금액을 계산하는 책임이 discountPolicy에 있었지만,
+// 할인 정책이 없을 경우, 할인 금액이 0원이라는 사실을 결정하는 책임이 discountPolicy가 아닌 movie에 있음
+// → 예외 케이스를 최소화하고, 일관성을 유지해야 함
+
+public class NonDiscountPolicy extends DiscountPolicy{
+
+  @Override
+  protected Money getDiscountAmount(Screening screening) {
+    return Money.ZERO;
+  }
+}
+```
 

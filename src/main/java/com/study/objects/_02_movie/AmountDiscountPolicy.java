@@ -1,6 +1,6 @@
 package com.study.objects._02_movie;
 
-public class AmountDiscountPolicy extends DiscountPolicy {
+public class AmountDiscountPolicy extends DefaultDiscountPolicy {
 
   private Money discountAmount;
 
