@@ -3,7 +3,11 @@ package com.study.objects._02_movie;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
 import java.math.BigDecimal;
+import java.time.DayOfWeek;
+import java.time.Duration;
 import java.time.LocalDateTime;
+import java.time.LocalTime;
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
@@ -14,22 +18,33 @@ class MovieTest {
   @DisplayName("calculateMovieFee()는")
   class Describe_calculateMovieFee {
 
+    private Movie movie;
+
     @Nested
     @DisplayName("할인 정책이 없으면")
     class Context_without_discount_policy {
+
+      @BeforeEach
+      void setUp() {
+        movie = new Movie(
+            "StarWars",
+            Duration.ofMinutes(210),
+            Money.wons(10_000),
+            new NonDiscountPolicy()
+        );
+      }
 
       @Test
       @DisplayName("기본 요금을 반환한다")
       void it_returns_base_fee() {
         // given
-        Movie movie = Movie.getStarWars();
         Screening screening = new Screening(movie, 1, LocalDateTime.now());
 
         // when
         Money fee = movie.calculateMovieFee(screening);
 
         // then
-        assertEquals(0, fee.getAmount().compareTo(BigDecimal.valueOf(10_000)));
+        assertAmountEquals(10_000, fee);
       }
     }
 
@@ -37,39 +52,59 @@ class MovieTest {
     @DisplayName("금액 할인 정책이 있으면")
     class Context_with_amount_discount_policy {
 
+      @BeforeEach
+      void setUp() {
+        movie = new Movie(
+            "Avatar",
+            Duration.ofMinutes(120),
+            Money.wons(10_000),
+            new AmountDiscountPolicy(
+                Money.wons(800),
+                new SequenceCondition(1),
+                new SequenceCondition(10),
+                new PeriodCondition(
+                    DayOfWeek.MONDAY,
+                    LocalTime.of(10, 0),
+                    LocalTime.of(11, 59)),
+                new PeriodCondition(
+                    DayOfWeek.THURSDAY,
+                    LocalTime.of(10, 0),
+                    LocalTime.of(20, 59)
+                )
+            )
+        );
+      }
+
       @Test
       @DisplayName("1회차 상영에 800원 할인된 요금을 반환한다")
       void it_returns_discounted_fee_for_first_sequence() {
         // given
-        Movie movie = Movie.getAvatar();
         Screening screening = new Screening(movie, 1, LocalDateTime.now());
 
         // when
         Money fee = movie.calculateMovieFee(screening);
 
         // then
-        assertEquals(0, fee.getAmount().compareTo(BigDecimal.valueOf(9_200)));
+        assertAmountEquals(9_200, fee);
       }
 
       @Test
       @DisplayName("10회차 상영에 800원 할인된 요금을 반환한다")
       void it_returns_discounted_fee_for_10th_sequence() {
         // given
-        Movie movie = Movie.getAvatar();
         Screening screening = new Screening(movie, 10, LocalDateTime.now());
 
         // when
         Money fee = movie.calculateMovieFee(screening);
 
         // then
-        assertEquals(0, fee.getAmount().compareTo(BigDecimal.valueOf(9_200)));
+        assertAmountEquals(9_200, fee);
       }
 
       @Test
       @DisplayName("월요일 10시 상영에 800원 할인된 요금을 반환한다")
       void it_returns_discounted_fee_for_monday_10_00() {
         // given
-        Movie movie = Movie.getAvatar();
         Screening screening = new Screening(movie, 3,
             LocalDateTime.of(2025, 9, 29, 10, 0));
 
@@ -77,14 +112,13 @@ class MovieTest {
         Money fee = movie.calculateMovieFee(screening);
 
         // then
-        assertEquals(0, fee.getAmount().compareTo(BigDecimal.valueOf(9_200)));
+        assertAmountEquals(9_200, fee);
       }
 
       @Test
       @DisplayName("월요일 11시 59분 상영에 800원 할인된 요금을 반환한다")
       void it_returns_discounted_fee_for_monday_11_59() {
         // given
-        Movie movie = Movie.getAvatar();
         Screening screening = new Screening(movie, 3,
             LocalDateTime.of(2025, 9, 29, 11, 59));
 
@@ -92,14 +126,13 @@ class MovieTest {
         Money fee = movie.calculateMovieFee(screening);
 
         // then
-        assertEquals(0, fee.getAmount().compareTo(BigDecimal.valueOf(9_200)));
+        assertAmountEquals(9_200, fee);
       }
 
       @Test
       @DisplayName("월요일 할인 시간대를 벗어나면 기본 요금을 반환한다")
       void it_returns_base_fee_outside_monday_discount_period() {
         // given
-        Movie movie = Movie.getAvatar();
         Screening screening = new Screening(movie, 3,
             LocalDateTime.of(2025, 9, 29, 12, 00));
 
@@ -107,14 +140,13 @@ class MovieTest {
         Money fee = movie.calculateMovieFee(screening);
 
         // then
-        assertEquals(0, fee.getAmount().compareTo(BigDecimal.valueOf(10_000)));
+        assertAmountEquals(10_000, fee);
       }
 
       @Test
       @DisplayName("목요일 10시 상영에 800원 할인된 요금을 반환한다")
       void it_returns_discounted_fee_for_thursday_10_00() {
         // given
-        Movie movie = Movie.getAvatar();
         Screening screening = new Screening(movie, 3,
             LocalDateTime.of(2025, 10, 2, 10, 00));
 
@@ -122,14 +154,13 @@ class MovieTest {
         Money fee = movie.calculateMovieFee(screening);
 
         // then
-        assertEquals(0, fee.getAmount().compareTo(BigDecimal.valueOf(9_200)));
+        assertAmountEquals(9_200, fee);
       }
 
       @Test
       @DisplayName("목요일 20시 59분 상영에 800원 할인된 요금을 반환한다")
       void it_returns_discounted_fee_for_thursday_20_59() {
         // given
-        Movie movie = Movie.getAvatar();
         Screening screening = new Screening(movie, 3,
             LocalDateTime.of(2025, 10, 2, 20, 59));
 
@@ -137,14 +168,13 @@ class MovieTest {
         Money fee = movie.calculateMovieFee(screening);
 
         // then
-        assertEquals(0, fee.getAmount().compareTo(BigDecimal.valueOf(9_200)));
+        assertAmountEquals(9_200, fee);
       }
 
       @Test
       @DisplayName("할인 조건에 맞지 않으면 기본 요금을 반환한다")
       void it_returns_base_fee_when_no_condition_met() {
         // given
-        Movie movie = Movie.getAvatar();
         Screening screening = new Screening(movie, 5,
             LocalDateTime.of(2025, 9, 28, 5, 0));
 
@@ -152,14 +182,13 @@ class MovieTest {
         Money fee = movie.calculateMovieFee(screening);
 
         // then
-        assertEquals(0, fee.getAmount().compareTo(BigDecimal.valueOf(10_000)));
+        assertAmountEquals(10_000, fee);
       }
 
       @Test
       @DisplayName("중복 할인 조건이 있어도 한 번만 할인된 요금을 반환한다")
       void it_returns_single_discounted_fee_when_multiple_conditions_met() {
         // given
-        Movie movie = Movie.getAvatar();
         Screening screening = new Screening(movie, 10,
             LocalDateTime.of(2025, 9, 25, 12, 0));
 
@@ -167,7 +196,7 @@ class MovieTest {
         Money fee = movie.calculateMovieFee(screening);
 
         // then
-        assertEquals(0, fee.getAmount().compareTo(BigDecimal.valueOf(9_200)));
+        assertAmountEquals(9_200, fee);
       }
     }
 
@@ -175,11 +204,32 @@ class MovieTest {
     @DisplayName("비율 할인 정책이 있으면")
     class Context_with_percent_discount_policy {
 
+      @BeforeEach
+      void setUp() {
+        movie = new Movie(
+            "Titanic",
+            Duration.ofMinutes(180),
+            Money.wons(11_000),
+            new PercentDiscountPolicy(
+                0.1,
+                new PeriodCondition(
+                    DayOfWeek.TUESDAY,
+                    LocalTime.of(14, 0),
+                    LocalTime.of(16, 59)),
+                new SequenceCondition(2),
+                new PeriodCondition(
+                    DayOfWeek.THURSDAY,
+                    LocalTime.of(10, 0),
+                    LocalTime.of(13, 59)
+                )
+            )
+        );
+      }
+
       @Test
       @DisplayName("화요일 14시 상영에 10% 할인된 요금을 반환한다")
       void it_returns_discounted_fee_for_tuesday_14_00() {
         // given
-        Movie movie = Movie.getTitanic();
         Screening screening = new Screening(movie, 3,
             LocalDateTime.of(2025, 9, 30, 14, 0));
 
@@ -187,14 +237,13 @@ class MovieTest {
         Money fee = movie.calculateMovieFee(screening);
 
         // then
-        assertEquals(0, fee.getAmount().compareTo(BigDecimal.valueOf(9_900)));
+        assertAmountEquals(9_900, fee);
       }
 
       @Test
       @DisplayName("화요일 16시 59분 상영에 10% 할인된 요금을 반환한다")
       void it_returns_discounted_fee_for_tuesday_16_59() {
         // given
-        Movie movie = Movie.getTitanic();
         Screening screening = new Screening(movie, 3,
             LocalDateTime.of(2025, 9, 30, 16, 59));
 
@@ -202,14 +251,13 @@ class MovieTest {
         Money fee = movie.calculateMovieFee(screening);
 
         // then
-        assertEquals(0, fee.getAmount().compareTo(BigDecimal.valueOf(9_900)));
+        assertAmountEquals(9_900, fee);
       }
 
       @Test
       @DisplayName("화요일 할인 시간대를 벗어나면 기본 요금을 반환한다")
       void it_returns_base_fee_outside_tuesday_discount_period() {
         // given
-        Movie movie = Movie.getTitanic();
         Screening screening = new Screening(movie, 3,
             LocalDateTime.of(2025, 9, 30, 17, 00));
 
@@ -217,28 +265,26 @@ class MovieTest {
         Money fee = movie.calculateMovieFee(screening);
 
         // then
-        assertEquals(0, fee.getAmount().compareTo(BigDecimal.valueOf(11_000)));
+        assertAmountEquals(11_000, fee);
       }
 
       @Test
       @DisplayName("2회차 상영에 10% 할인된 요금을 반환한다")
       void it_returns_discounted_fee_for_second_sequence() {
         // given
-        Movie movie = Movie.getTitanic();
         Screening screening = new Screening(movie, 2, LocalDateTime.now());
 
         // when
         Money fee = movie.calculateMovieFee(screening);
 
         // then
-        assertEquals(0, fee.getAmount().compareTo(BigDecimal.valueOf(9_900)));
+        assertAmountEquals(9_900, fee);
       }
 
       @Test
       @DisplayName("목요일 10시 상영에 10% 할인된 요금을 반환한다")
       void it_returns_discounted_fee_for_thursday_10_00() {
         // given
-        Movie movie = Movie.getTitanic();
         Screening screening = new Screening(movie, 3,
             LocalDateTime.of(2025, 10, 2, 10, 0));
 
@@ -246,14 +292,13 @@ class MovieTest {
         Money fee = movie.calculateMovieFee(screening);
 
         // then
-        assertEquals(0, fee.getAmount().compareTo(BigDecimal.valueOf(9_900)));
+        assertAmountEquals(9_900, fee);
       }
 
       @Test
       @DisplayName("목요일 13시 59분 상영에 10% 할인된 요금을 반환한다")
       void it_returns_discounted_fee_for_thursday_13_59() {
         // given
-        Movie movie = Movie.getTitanic();
         Screening screening = new Screening(movie, 3,
             LocalDateTime.of(2025, 10, 2, 13, 59));
 
@@ -261,14 +306,13 @@ class MovieTest {
         Money fee = movie.calculateMovieFee(screening);
 
         // then
-        assertEquals(0, fee.getAmount().compareTo(BigDecimal.valueOf(9_900)));
+        assertAmountEquals(9_900, fee);
       }
 
       @Test
       @DisplayName("할인 조건에 맞지 않으면 기본 요금을 반환한다")
       void it_returns_base_fee_when_no_condition_met() {
         // given
-        Movie movie = Movie.getTitanic();
         Screening screening = new Screening(movie, 5,
             LocalDateTime.of(2025, 9, 28, 5, 0));
 
@@ -276,14 +320,13 @@ class MovieTest {
         Money fee = movie.calculateMovieFee(screening);
 
         // then
-        assertEquals(0, fee.getAmount().compareTo(BigDecimal.valueOf(11_000)));
+        assertAmountEquals(11_000, fee);
       }
 
       @Test
       @DisplayName("중복 할인 조건이 있어도 한 번만 할인된 요금을 반환한다")
       void it_returns_single_discounted_fee_when_multiple_conditions_met() {
         // given
-        Movie movie = Movie.getTitanic();
         Screening screening = new Screening(movie, 2,
             LocalDateTime.of(2025, 9, 30, 14, 0));
 
@@ -291,7 +334,7 @@ class MovieTest {
         Money fee = movie.calculateMovieFee(screening);
 
         // then
-        assertEquals(0, fee.getAmount().compareTo(BigDecimal.valueOf(9_900)));
+        assertAmountEquals(9_900, fee);
       }
     }
 
@@ -309,9 +352,14 @@ class MovieTest {
       @DisplayName("할인 정책을 변경한다")
       void it_changes_discount_policy() {
         // given
-        Movie movie = Movie.getStarWars();
+        Movie movie = new Movie(
+            "StarWars",
+            Duration.ofMinutes(210),
+            Money.wons(10_000),
+            new NonDiscountPolicy()
+        );
         Screening screening = new Screening(movie, 1,
-            LocalDateTime.of(2025 ,9, 28, 10, 0));
+            LocalDateTime.of(2025, 9, 28, 10, 0));
 
         // when
         movie.changeDiscountPolicy(
@@ -319,14 +367,31 @@ class MovieTest {
         Money fee = movie.calculateMovieFee(screening);
 
         // then
-        assertEquals(0, fee.getAmount().compareTo(BigDecimal.valueOf(9_000)));
+        assertAmountEquals(9_000, fee);
       }
 
       @Test
       @DisplayName("할인 정책을 제거한다")
       void it_removes_discount_policy() {
         // given
-        Movie movie = Movie.getTitanic();
+        Movie movie = new Movie(
+            "Titanic",
+            Duration.ofMinutes(180),
+            Money.wons(11_000),
+            new PercentDiscountPolicy(
+                0.1,
+                new PeriodCondition(
+                    DayOfWeek.TUESDAY,
+                    LocalTime.of(14, 0),
+                    LocalTime.of(16, 59)),
+                new SequenceCondition(2),
+                new PeriodCondition(
+                    DayOfWeek.THURSDAY,
+                    LocalTime.of(10, 0),
+                    LocalTime.of(13, 59)
+                )
+            )
+        );
         Screening screening = new Screening(movie, 2, LocalDateTime.now());
 
         // when
@@ -334,8 +399,13 @@ class MovieTest {
         Money fee = movie.calculateMovieFee(screening);
 
         // then
-        assertEquals(0, fee.getAmount().compareTo(BigDecimal.valueOf(11_000)));
+        assertAmountEquals(11_000, fee);
       }
     }
   }
+
+  private void assertAmountEquals(long expected, Money actual) {
+    assertEquals(0, actual.getAmount().compareTo(BigDecimal.valueOf(expected)));
+  }
+
 }
