@@ -1,17 +1,16 @@
 package com.study.objects._04_movie;
 
 import java.time.LocalDateTime;
-import lombok.AllArgsConstructor;
 import lombok.Getter;
-import lombok.Setter;
+import lombok.RequiredArgsConstructor;
 
 @Getter
-@Setter
-@AllArgsConstructor
+@RequiredArgsConstructor
 public class Screening {
-  private Movie movie;
-  private int sequence;
-  private LocalDateTime whenScreened;
+
+  private final Movie movie;
+  private final int sequence;
+  private final LocalDateTime whenScreened;
 
   public Money calculateFee(int audienceCount) {
     switch (movie.getType()) {
@@ -24,6 +23,7 @@ public class Screening {
         if (movie.isDiscountable(whenScreened, sequence)) {
           return movie.calculatePercentDiscountedFee().times(audienceCount);
         }
+        break;
       case NONE_DISCOUNT:
         return movie.calculateNoneDiscountedFee().times(audienceCount);
     }

@@ -3,10 +3,8 @@ package com.study.objects._04_movie;
 import java.time.DayOfWeek;
 import java.time.LocalTime;
 import lombok.Getter;
-import lombok.Setter;
 
 @Getter
-@Setter
 public class DiscountCondition {
 
   private DiscountConditionType type;
