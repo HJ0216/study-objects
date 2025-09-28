@@ -11,7 +11,6 @@ import org.junit.jupiter.api.Test;
 
 class MoneyTest {
 
-
   @Nested
   @DisplayName("wons()는")
   class Describe_wons {

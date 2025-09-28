@@ -21,8 +21,7 @@ class DiscountPolicyTest {
 
     private DiscountPolicy policy;
     private Movie movie;
-
-
+    
     @Nested
     @DisplayName("할인 정책이 없으면")
     class Context_with_NonDiscountPolicy {

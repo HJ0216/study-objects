@@ -16,6 +16,8 @@ import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
+import org.junit.jupiter.params.ParameterizedTest;
+import org.junit.jupiter.params.provider.CsvSource;
 import org.mockito.junit.jupiter.MockitoExtension;
 
 @ExtendWith(MockitoExtension.class)
@@ -74,94 +76,47 @@ class MovieTest {
         );
       }
 
-      @Test
-      @DisplayName("1회차 상영에 800원 할인된 요금을 반환한다")
-      void it_returns_discounted_fee_for_first_sequence() {
+      @ParameterizedTest
+      @CsvSource({
+          "1, 800",
+          "10, 800"
+      })
+      @DisplayName("할인 회차 상영에 800원 할인된 요금을 반환한다")
+      void it_returns_discounted_fee_for_discount_sequence(int sequence, int discountAmount) {
         // given
-        Screening screening = new Screening(movie, 1,
+        Screening screening = new Screening(movie, sequence,
             LocalDateTime.of(LocalDate.now().with(DayOfWeek.SUNDAY), LocalTime.of(10, 0)));
-        when(mockPolicy.calculateDiscountAmount(screening)).thenReturn(Money.wons(800));
+        when(mockPolicy.calculateDiscountAmount(screening)).thenReturn(Money.wons(discountAmount));
 
         // when
         Money fee = movie.calculateMovieFee(screening);
 
         // then
-        assertAmountEquals(9_200, fee);
+        assertAmountEquals(10_000 - discountAmount, fee);
       }
 
-      @Test
-      @DisplayName("10회차 상영에 800원 할인된 요금을 반환한다")
-      void it_returns_discounted_fee_for_10th_sequence() {
+
+      @ParameterizedTest
+      @CsvSource({
+          "THURSDAY, 10, 0, 800",
+          "THURSDAY, 20, 59, 800",
+          "MONDAY, 10, 30, 800"
+      })
+      @DisplayName("할인 시간대 상영에 800원 할인된 요금을 반환한다")
+      void it_returns_discounted_fee_during_discount_periods(DayOfWeek dayOfWeek, int hour, int minute, int discountAmount) {
         // given
-        Screening screening = new Screening(movie, 10,
-            LocalDateTime.of(LocalDate.now().with(DayOfWeek.SUNDAY), LocalTime.of(10, 0)));
-        when(mockPolicy.calculateDiscountAmount(screening)).thenReturn(Money.wons(800));
+        LocalDateTime dateTime = LocalDateTime.of(
+            LocalDate.now().with(dayOfWeek),
+            LocalTime.of(hour, minute)
+        );
+        Screening screening = new Screening(movie, 3, dateTime);
+        when(mockPolicy.calculateDiscountAmount(screening)).thenReturn(Money.wons(discountAmount));
 
         // when
         Money fee = movie.calculateMovieFee(screening);
 
         // then
-        assertAmountEquals(9_200, fee);
-      }
-
-      @Test
-      @DisplayName("월요일 10시 상영에 800원 할인된 요금을 반환한다")
-      void it_returns_discounted_fee_for_monday_10_00() {
-        // given
-        Screening screening = new Screening(movie, 3,
-            LocalDateTime.of(LocalDate.now().with(DayOfWeek.MONDAY), LocalTime.of(10, 0)));
-        when(mockPolicy.calculateDiscountAmount(screening)).thenReturn(Money.wons(800));
-
-        // when
-        Money fee = movie.calculateMovieFee(screening);
-
-        // then
-        assertAmountEquals(9_200, fee);
-      }
-
-      @Test
-      @DisplayName("월요일 11시 59분 상영에 800원 할인된 요금을 반환한다")
-      void it_returns_discounted_fee_for_monday_11_59() {
-        // given
-        Screening screening = new Screening(movie, 3,
-            LocalDateTime.of(LocalDate.now().with(DayOfWeek.MONDAY), LocalTime.of(11, 59)));
-        when(mockPolicy.calculateDiscountAmount(screening)).thenReturn(Money.wons(800));
-
-        // when
-        Money fee = movie.calculateMovieFee(screening);
-
-        // then
-        assertAmountEquals(9_200, fee);
-      }
-
-      @Test
-      @DisplayName("목요일 10시 상영에 800원 할인된 요금을 반환한다")
-      void it_returns_discounted_fee_for_thursday_10_00() {
-        // given
-        Screening screening = new Screening(movie, 3,
-            LocalDateTime.of(LocalDate.now().with(DayOfWeek.THURSDAY), LocalTime.of(10, 0)));
-        when(mockPolicy.calculateDiscountAmount(screening)).thenReturn(Money.wons(800));
-
-        // when
-        Money fee = movie.calculateMovieFee(screening);
-
-        // then
-        assertAmountEquals(9_200, fee);
-      }
-
-      @Test
-      @DisplayName("목요일 20시 59분 상영에 800원 할인된 요금을 반환한다")
-      void it_returns_discounted_fee_for_thursday_20_59() {
-        // given
-        Screening screening = new Screening(movie, 3,
-            LocalDateTime.of(LocalDate.now().with(DayOfWeek.THURSDAY), LocalTime.of(20, 59)));
-        when(mockPolicy.calculateDiscountAmount(screening)).thenReturn(Money.wons(800));
-
-        // when
-        Money fee = movie.calculateMovieFee(screening);
-
-        // then
-        assertAmountEquals(9_200, fee);
+        assertAmountEquals(10_000 - discountAmount, fee);
       }
 
       @Test
@@ -210,35 +165,30 @@ class MovieTest {
         );
       }
 
-      @Test
-      @DisplayName("화요일 14시 상영에 10% 할인된 요금을 반환한다")
-      void it_returns_discounted_fee_for_tuesday_14_00() {
+      @ParameterizedTest
+      @CsvSource({
+          "TUESDAY, 14, 00, 1100",
+          "TUESDAY, 16, 59, 1100",
+          "THURSDAY, 10, 30, 1100",
+          "THURSDAY, 13, 59, 1100"
+      })
+      @DisplayName("할인 시간대 상영에 10% 할인된 요금을 반환한다")
+      void it_returns_discounted_fee_during_discount_periods(DayOfWeek dayOfWeek, int hour, int minute, int discountAmount) {
         // given
-        Screening screening = new Screening(movie, 3,
-            LocalDateTime.of(LocalDate.now().with(DayOfWeek.TUESDAY), LocalTime.of(14, 0)));
-        when(mockPolicy.calculateDiscountAmount(screening)).thenReturn(Money.wons(1_100));
+        LocalDateTime dateTime = LocalDateTime.of(
+            LocalDate.now().with(dayOfWeek),
+            LocalTime.of(hour, minute)
+        );
+        Screening screening = new Screening(movie, 3, dateTime);
+        when(mockPolicy.calculateDiscountAmount(screening)).thenReturn(Money.wons(discountAmount));
 
         // when
         Money fee = movie.calculateMovieFee(screening);
 
         // then
-        assertAmountEquals(9_900, fee);
+        assertAmountEquals(11_000 - discountAmount, fee);
       }
 
-      @Test
-      @DisplayName("화요일 16시 59분 상영에 10% 할인된 요금을 반환한다")
-      void it_returns_discounted_fee_for_tuesday_16_59() {
-        // given
-        Screening screening = new Screening(movie, 3,
-            LocalDateTime.of(LocalDate.now().with(DayOfWeek.TUESDAY), LocalTime.of(16, 59)));
-        when(mockPolicy.calculateDiscountAmount(screening)).thenReturn(Money.wons(1_100));
-
-        // when
-        Money fee = movie.calculateMovieFee(screening);
-
-        // then
-        assertAmountEquals(9_900, fee);
-      }
 
       @Test
       @DisplayName("2회차 상영에 10% 할인된 요금을 반환한다")
@@ -246,36 +196,6 @@ class MovieTest {
         // given
         Screening screening = new Screening(movie, 2,
             LocalDateTime.of(LocalDate.now().with(DayOfWeek.SUNDAY), LocalTime.of(10, 0)));
-        when(mockPolicy.calculateDiscountAmount(screening)).thenReturn(Money.wons(1_100));
-
-        // when
-        Money fee = movie.calculateMovieFee(screening);
-
-        // then
-        assertAmountEquals(9_900, fee);
-      }
-
-      @Test
-      @DisplayName("목요일 10시 상영에 10% 할인된 요금을 반환한다")
-      void it_returns_discounted_fee_for_thursday_10_00() {
-        // given
-        Screening screening = new Screening(movie, 3,
-            LocalDateTime.of(LocalDate.now().with(DayOfWeek.THURSDAY), LocalTime.of(10, 0)));
-        when(mockPolicy.calculateDiscountAmount(screening)).thenReturn(Money.wons(1_100));
-
-        // when
-        Money fee = movie.calculateMovieFee(screening);
-
-        // then
-        assertAmountEquals(9_900, fee);
-      }
-
-      @Test
-      @DisplayName("목요일 13시 59분 상영에 10% 할인된 요금을 반환한다")
-      void it_returns_discounted_fee_for_thursday_13_59() {
-        // given
-        Screening screening = new Screening(movie, 3,
-            LocalDateTime.of(LocalDate.now().with(DayOfWeek.THURSDAY), LocalTime.of(13, 59)));
         when(mockPolicy.calculateDiscountAmount(screening)).thenReturn(Money.wons(1_100));
 
         // when
