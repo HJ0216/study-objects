@@ -5,6 +5,7 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 import java.math.BigDecimal;
 import java.time.DayOfWeek;
 import java.time.Duration;
+import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.LocalTime;
 import org.junit.jupiter.api.BeforeEach;
@@ -38,7 +39,9 @@ class MovieIntegrationTest {
       @DisplayName("기본 요금을 반환한다")
       void it_returns_base_fee() {
         // given
-        Screening screening = new Screening(movie, 1, LocalDateTime.of(2025, 9, 28, 10, 00));
+        Screening screening = new Screening(movie, 1,
+            LocalDateTime.of(LocalDate.now().with(DayOfWeek.SUNDAY), LocalTime.of(10, 0)));
+
 
         // when
         Money fee = movie.calculateMovieFee(screening);
@@ -79,7 +82,8 @@ class MovieIntegrationTest {
       @DisplayName("1회차 상영에 800원 할인된 요금을 반환한다")
       void it_returns_discounted_fee_for_first_sequence() {
         // given
-        Screening screening = new Screening(movie, 1, LocalDateTime.of(2025, 9, 28, 10, 00));
+        Screening screening = new Screening(movie, 1,
+            LocalDateTime.of(LocalDate.now().with(DayOfWeek.SUNDAY), LocalTime.of(10, 0)));
 
         // when
         Money fee = movie.calculateMovieFee(screening);
@@ -92,7 +96,8 @@ class MovieIntegrationTest {
       @DisplayName("10회차 상영에 800원 할인된 요금을 반환한다")
       void it_returns_discounted_fee_for_10th_sequence() {
         // given
-        Screening screening = new Screening(movie, 10, LocalDateTime.of(2025, 9, 28, 10, 00));
+        Screening screening = new Screening(movie, 10,
+            LocalDateTime.of(LocalDate.now().with(DayOfWeek.SUNDAY), LocalTime.of(10,  0)));
 
         // when
         Money fee = movie.calculateMovieFee(screening);
@@ -106,7 +111,7 @@ class MovieIntegrationTest {
       void it_returns_discounted_fee_for_monday_10_00() {
         // given
         Screening screening = new Screening(movie, 3,
-            LocalDateTime.of(2025, 9, 29, 10, 0));
+            LocalDateTime.of(LocalDate.now().with(DayOfWeek.MONDAY), LocalTime.of(10, 0)));
 
         // when
         Money fee = movie.calculateMovieFee(screening);
@@ -120,7 +125,7 @@ class MovieIntegrationTest {
       void it_returns_discounted_fee_for_monday_11_59() {
         // given
         Screening screening = new Screening(movie, 3,
-            LocalDateTime.of(2025, 9, 29, 11, 59));
+            LocalDateTime.of(LocalDate.now().with(DayOfWeek.MONDAY), LocalTime.of(11, 59)));
 
         // when
         Money fee = movie.calculateMovieFee(screening);
@@ -134,7 +139,7 @@ class MovieIntegrationTest {
       void it_returns_discounted_fee_for_thursday_10_00() {
         // given
         Screening screening = new Screening(movie, 3,
-            LocalDateTime.of(2025, 10, 2, 10, 00));
+            LocalDateTime.of(LocalDate.now().with(DayOfWeek.THURSDAY), LocalTime.of(10, 0)));
 
         // when
         Money fee = movie.calculateMovieFee(screening);
@@ -148,7 +153,7 @@ class MovieIntegrationTest {
       void it_returns_discounted_fee_for_thursday_20_59() {
         // given
         Screening screening = new Screening(movie, 3,
-            LocalDateTime.of(2025, 10, 2, 20, 59));
+            LocalDateTime.of(LocalDate.now().with(DayOfWeek.THURSDAY), LocalTime.of(20, 59)));
 
         // when
         Money fee = movie.calculateMovieFee(screening);
@@ -162,7 +167,7 @@ class MovieIntegrationTest {
       void it_returns_base_fee_when_no_condition_met() {
         // given
         Screening screening = new Screening(movie, 5,
-            LocalDateTime.of(2025, 9, 28, 5, 0));
+            LocalDateTime.of(LocalDate.now().with(DayOfWeek.SUNDAY), LocalTime.of(15, 0)));
 
         // when
         Money fee = movie.calculateMovieFee(screening);
@@ -176,7 +181,7 @@ class MovieIntegrationTest {
       void it_returns_single_discounted_fee_when_multiple_conditions_met() {
         // given
         Screening screening = new Screening(movie, 10,
-            LocalDateTime.of(2025, 9, 25, 12, 0));
+            LocalDateTime.of(LocalDate.now().with(DayOfWeek.THURSDAY), LocalTime.of(12, 0)));
 
         // when
         Money fee = movie.calculateMovieFee(screening);
@@ -217,7 +222,7 @@ class MovieIntegrationTest {
       void it_returns_discounted_fee_for_tuesday_14_00() {
         // given
         Screening screening = new Screening(movie, 3,
-            LocalDateTime.of(2025, 9, 30, 14, 0));
+            LocalDateTime.of(LocalDate.now().with(DayOfWeek.TUESDAY), LocalTime.of(14, 0)));
 
         // when
         Money fee = movie.calculateMovieFee(screening);
@@ -231,7 +236,7 @@ class MovieIntegrationTest {
       void it_returns_discounted_fee_for_tuesday_16_59() {
         // given
         Screening screening = new Screening(movie, 3,
-            LocalDateTime.of(2025, 9, 30, 16, 59));
+            LocalDateTime.of(LocalDate.now().with(DayOfWeek.TUESDAY), LocalTime.of(16, 59)));
 
         // when
         Money fee = movie.calculateMovieFee(screening);
@@ -245,7 +250,7 @@ class MovieIntegrationTest {
       void it_returns_discounted_fee_for_second_sequence() {
         // given
         Screening screening = new Screening(movie, 2,
-            LocalDateTime.of(2025, 9, 28, 10, 00));
+            LocalDateTime.of(LocalDate.now().with(DayOfWeek.SUNDAY), LocalTime.of(10, 0)));
 
         // when
         Money fee = movie.calculateMovieFee(screening);
@@ -259,7 +264,7 @@ class MovieIntegrationTest {
       void it_returns_discounted_fee_for_thursday_10_00() {
         // given
         Screening screening = new Screening(movie, 3,
-            LocalDateTime.of(2025, 10, 2, 10, 0));
+            LocalDateTime.of(LocalDate.now().with(DayOfWeek.THURSDAY), LocalTime.of(10, 0)));
 
         // when
         Money fee = movie.calculateMovieFee(screening);
@@ -273,7 +278,7 @@ class MovieIntegrationTest {
       void it_returns_discounted_fee_for_thursday_13_59() {
         // given
         Screening screening = new Screening(movie, 3,
-            LocalDateTime.of(2025, 10, 2, 13, 59));
+            LocalDateTime.of(LocalDate.now().with(DayOfWeek.THURSDAY), LocalTime.of(13, 59)));
 
         // when
         Money fee = movie.calculateMovieFee(screening);
@@ -287,7 +292,7 @@ class MovieIntegrationTest {
       void it_returns_base_fee_when_no_condition_met() {
         // given
         Screening screening = new Screening(movie, 5,
-            LocalDateTime.of(2025, 9, 28, 5, 0));
+            LocalDateTime.of(LocalDate.now().with(DayOfWeek.SUNDAY), LocalTime.of(15, 0)));
 
         // when
         Money fee = movie.calculateMovieFee(screening);
@@ -301,7 +306,7 @@ class MovieIntegrationTest {
       void it_returns_single_discounted_fee_when_multiple_conditions_met() {
         // given
         Screening screening = new Screening(movie, 2,
-            LocalDateTime.of(2025, 9, 30, 14, 0));
+            LocalDateTime.of(LocalDate.now().with(DayOfWeek.TUESDAY), LocalTime.of(12, 0)));
 
         // when
         Money fee = movie.calculateMovieFee(screening);
@@ -332,7 +337,7 @@ class MovieIntegrationTest {
             new NonDiscountPolicy()
         );
         Screening screening = new Screening(movie, 1,
-            LocalDateTime.of(2025, 9, 28, 10, 0));
+            LocalDateTime.of(LocalDate.now().with(DayOfWeek.SUNDAY), LocalTime.of(10, 0)));
 
         // when
         movie.changeDiscountPolicy(

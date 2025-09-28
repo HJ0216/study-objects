@@ -36,7 +36,7 @@ class PeriodConditionTest {
       void it_returns_true() {
         // given
         Screening screening = new Screening(
-            TEST_MOVIE, 1, LocalDateTime.of(LocalDate.now().with(DayOfWeek.MONDAY), LocalTime.of(11, 00)));
+            TEST_MOVIE, 1, LocalDateTime.of(LocalDate.now().with(DayOfWeek.MONDAY), LocalTime.of(11, 0)));
 
         // when & then
         assertTrue(MONDAY_10_TO_12_CONDITION.isSatisfiedBy(screening));
@@ -52,7 +52,7 @@ class PeriodConditionTest {
       void it_returns_false() {
         // given
         Screening screening = new Screening(
-            TEST_MOVIE, 1, LocalDateTime.of(LocalDate.now().with(DayOfWeek.TUESDAY), LocalTime.of(11, 00)));
+            TEST_MOVIE, 1, LocalDateTime.of(LocalDate.now().with(DayOfWeek.TUESDAY), LocalTime.of(11, 0)));
 
         // when & then
         assertFalse(MONDAY_10_TO_12_CONDITION.isSatisfiedBy(screening));
