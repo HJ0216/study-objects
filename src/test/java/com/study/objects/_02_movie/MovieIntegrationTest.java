@@ -202,7 +202,7 @@ class MovieIntegrationTest {
             Duration.ofMinutes(180),
             Money.wons(11_000),
             new PercentDiscountPolicy(
-                0.1,
+                new BigDecimal("0.1"),
                 new PeriodCondition(
                     DayOfWeek.TUESDAY,
                     LocalTime.of(14, 0),
@@ -357,7 +357,7 @@ class MovieIntegrationTest {
             Duration.ofMinutes(180),
             Money.wons(11_000),
             new PercentDiscountPolicy(
-                0.1,
+                new BigDecimal("0.1"),
                 new PeriodCondition(
                     DayOfWeek.TUESDAY,
                     LocalTime.of(14, 0),
@@ -373,7 +373,7 @@ class MovieIntegrationTest {
         Screening screening = new Screening(movie, 2, LocalDateTime.now());
 
         // when
-        movie.changeDiscountPolicy(null);
+        movie.changeDiscountPolicy(new NonDiscountPolicy());
         Money fee = movie.calculateMovieFee(screening);
 
         // then

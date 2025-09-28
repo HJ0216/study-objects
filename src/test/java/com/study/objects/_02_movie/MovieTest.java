@@ -285,7 +285,7 @@ class MovieTest {
         assertAmountEquals(14_000, feeWithDiscount);
 
         // when
-        movie.changeDiscountPolicy(null);
+        movie.changeDiscountPolicy(new NonDiscountPolicy());
         Money feeWithoutDiscount = movie.calculateMovieFee(screening);
 
         // then

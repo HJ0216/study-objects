@@ -41,7 +41,7 @@ class MoneyTest {
       @DisplayName("Money 객체를 반환한다")
       void it_returns_money_of_100_5() {
         // given
-        double amount = 100.5;
+        String amount = "100.5";
 
         // when
         Money money = Money.wons(amount);
@@ -51,8 +51,12 @@ class MoneyTest {
       }
     }
 
-    private void assertAmountEquals(Number expected, Money actual) {
-      assertEquals(0, actual.getAmount().compareTo(BigDecimal.valueOf(expected.doubleValue())));
+    private void assertAmountEquals(long expected, Money actual) {
+      assertEquals(0, actual.getAmount().compareTo(BigDecimal.valueOf(expected)));
+    }
+
+    private void assertAmountEquals(String expected, Money actual) {
+      assertEquals(0, actual.getAmount().compareTo(new BigDecimal(expected)));
     }
   }
 
@@ -159,7 +163,7 @@ class MoneyTest {
       @DisplayName("3을 곱한 Money 객체를 반환한다")
       void it_returns_money_times_3() {
         // given
-        double number = 3;
+        int number = 3;
 
         Money originalAmount = Money.wons(350L);
         Money multipliedAmount = Money.wons(350L).times(number);
@@ -178,7 +182,7 @@ class MoneyTest {
       @DisplayName("기존 값과 동일한 금액의 Money 객체를 반환한다")
       void it_returns_money_of_same_amount() {
         // given
-        double number = 1;
+        int number = 1;
 
         // when
         Money originalAmount = Money.wons(350L);
@@ -198,7 +202,7 @@ class MoneyTest {
       @DisplayName("0을 곱한 Money 객체를 반환한다")
       void it_returns_money_times_0() {
         // given
-        double number = 0;
+        int number = 0;
 
         Money originalAmount = Money.wons(350L);
         Money multipliedAmount = Money.wons(350L).times(number);
@@ -220,7 +224,7 @@ class MoneyTest {
         double number = 0.1;
 
         Money originalAmount = Money.wons(350L);
-        Money multipliedAmount = Money.wons(350L).times(number);
+        Money multipliedAmount = Money.wons(350L).times(new BigDecimal(Double.toString(number)));
 
         // then
         assertAmountEquals(Money.wons(350L), originalAmount);

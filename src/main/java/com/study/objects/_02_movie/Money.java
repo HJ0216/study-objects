@@ -15,8 +15,8 @@ public class Money {
     return new Money(BigDecimal.valueOf(amount));
   }
 
-  public static Money wons(double amount) {
-    return new Money(BigDecimal.valueOf(amount));
+  public static Money wons(String amount) {
+    return new Money(new BigDecimal(amount));
   }
 
   public Money plus(Money amount) {
@@ -27,8 +27,12 @@ public class Money {
     return new Money(this.amount.subtract(amount.amount));
   }
 
-  public Money times(double percent) {
+  public Money times(int percent) {
     return new Money(this.amount.multiply(BigDecimal.valueOf(percent)));
+  }
+
+  public Money times(BigDecimal percent) {
+    return new Money(this.amount.multiply(percent));
   }
 
   public boolean isLessThan(Money other) {

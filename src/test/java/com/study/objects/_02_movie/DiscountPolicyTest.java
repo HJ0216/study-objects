@@ -21,7 +21,7 @@ class DiscountPolicyTest {
 
     private DiscountPolicy policy;
     private Movie movie;
-    
+
     @Nested
     @DisplayName("할인 정책이 없으면")
     class Context_with_NonDiscountPolicy {
@@ -175,7 +175,7 @@ class DiscountPolicyTest {
       @BeforeEach
       void setUp() {
         policy = new PercentDiscountPolicy(
-            0.1,
+            new BigDecimal("0.1"),
             new PeriodCondition(
                 DayOfWeek.TUESDAY,
                 LocalTime.of(14, 0),

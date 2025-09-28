@@ -1,5 +1,8 @@
 package com.study.objects._02_movie;
 
+import static java.util.Objects.requireNonNull;
+
+import java.math.BigDecimal;
 import java.time.DayOfWeek;
 import java.time.Duration;
 import java.time.LocalTime;
@@ -14,7 +17,7 @@ public class Movie {
   private DiscountPolicy discountPolicy;
 
   public void changeDiscountPolicy(DiscountPolicy discountPolicy) {
-    this.discountPolicy = discountPolicy;
+    this.discountPolicy = requireNonNull(discountPolicy);
   }
 
   public Money getFee() {
@@ -22,10 +25,6 @@ public class Movie {
   }
 
   public Money calculateMovieFee(Screening screening) {
-    if (discountPolicy == null) {
-      return fee;
-    }
-
     return fee.minus(discountPolicy.calculateDiscountAmount(screening));
   }
 
@@ -48,7 +47,7 @@ public class Movie {
         Duration.ofMinutes(180),
         Money.wons(11_000),
         new PercentDiscountPolicy(
-            0.1,
+            new BigDecimal("0.1"),
             new PeriodCondition(DayOfWeek.TUESDAY, LocalTime.of(14, 0), LocalTime.of(16, 59)),
             new SequenceCondition(2),
             new PeriodCondition(DayOfWeek.THURSDAY, LocalTime.of(10, 0), LocalTime.of(13, 59))));

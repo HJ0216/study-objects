@@ -1,10 +1,12 @@
 package com.study.objects._02_movie;
 
+import java.math.BigDecimal;
+
 public class PercentDiscountPolicy extends DefaultDiscountPolicy {
 
-  private double percent;
+  private final BigDecimal percent;
 
-  public PercentDiscountPolicy(double percent, DiscountCondition... conditions) {
+  public PercentDiscountPolicy(BigDecimal percent, DiscountCondition... conditions) {
     super(conditions);
     this.percent = percent;
   }

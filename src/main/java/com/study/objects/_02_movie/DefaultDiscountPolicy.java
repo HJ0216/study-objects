@@ -6,10 +6,10 @@ import java.util.List;
 
 public abstract class DefaultDiscountPolicy implements DiscountPolicy {
 
-  private List<DiscountCondition> conditions = new ArrayList<>();
+  private final List<DiscountCondition> conditions;
 
   public DefaultDiscountPolicy(DiscountCondition... conditions) {
-    this.conditions = Arrays.asList(conditions);
+    this.conditions = new ArrayList<>(Arrays.asList(conditions));
   }
 
   public Money calculateDiscountAmount(Screening screening) {
