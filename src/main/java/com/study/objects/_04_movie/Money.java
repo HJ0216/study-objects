@@ -27,7 +27,7 @@ public class Money {
   }
 
   public Money times(double percent) {
-    return new Money(this.amount.multiply(new BigDecimal(Double.toString(percent))));
+    return new Money(this.amount.multiply(BigDecimal.valueOf(percent)));
   }
 
   public Money times(BigDecimal percent) {

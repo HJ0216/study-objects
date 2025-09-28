@@ -1,12 +1,12 @@
 package com.study.objects._04_movie;
 
 import lombok.Getter;
-import lombok.Setter;
+import lombok.RequiredArgsConstructor;
 
 @Getter
-@Setter
+@RequiredArgsConstructor
 public class Customer {
 
-  private String name;
-  private String id;
+  private final String name;
+  private final String id;
 }

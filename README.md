@@ -57,4 +57,3 @@ public class NonDiscountPolicy extends DiscountPolicy{
 
 ### CHAPTER04: 설계 품질과 트레이드 오프
 * 객체 설계를 위한 가장 기본적인 아이디어는 변경의 정도에 따라 구현과 인터페이스를 분리하고 외부에서는 인터페이스에만 의존하도록 관계를 조절하는 것이다.
-* 

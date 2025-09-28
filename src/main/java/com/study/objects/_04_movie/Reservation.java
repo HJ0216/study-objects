@@ -1,16 +1,14 @@
 package com.study.objects._04_movie;
 
-import lombok.AllArgsConstructor;
 import lombok.Getter;
-import lombok.Setter;
+import lombok.RequiredArgsConstructor;
 
 @Getter
-@Setter
-@AllArgsConstructor
+@RequiredArgsConstructor
 public class Reservation {
 
-  private Customer customer;
-  private Screening screening;
-  private Money fee;
-  private int audienceCount;
+  private final Customer customer;
+  private final Screening screening;
+  private final Money fee;
+  private final int audienceCount;
 }
