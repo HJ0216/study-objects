@@ -1,6 +1,5 @@
-package com.study.objects._03_movie;
+package com.study.objects._04_movie;
 
-import com.study.objects._03_movie.Customer;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.Setter;

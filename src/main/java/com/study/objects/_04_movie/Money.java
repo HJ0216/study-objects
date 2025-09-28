@@ -1,4 +1,4 @@
-package com.study.objects._03_movie;
+package com.study.objects._04_movie;
 
 import java.math.BigDecimal;
 import lombok.RequiredArgsConstructor;
