@@ -3,12 +3,11 @@ package com.study.objects._05_movie;
 import java.time.LocalDateTime;
 import lombok.Getter;
 
+@Getter
 public class Screening {
 
   private Movie movie;
-  @Getter
   private int sequence;
-  @Getter
   private LocalDateTime whenScreened;
 
   public Reservation reserve(Customer customer, int audienceCount){

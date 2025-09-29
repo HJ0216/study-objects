@@ -12,9 +12,10 @@ public class AmountDiscountMovie extends Movie {
       Duration runningTime,
       Money fee,
       List<DiscountCondition> conditions,
-      Money discountAmount
+      Money discountAmount,
+      MovieType type
   ) {
-    super(title, runningTime, fee, conditions); // 부모 생성자 호출
+    super(title, runningTime, fee, conditions, type); // 부모 생성자 호출
     this.discountAmount = discountAmount;
   }
 

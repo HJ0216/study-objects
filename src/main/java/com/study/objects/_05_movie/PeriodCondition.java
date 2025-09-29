@@ -7,9 +7,11 @@ import lombok.RequiredArgsConstructor;
 @RequiredArgsConstructor
 public class PeriodCondition implements DiscountCondition {
 
+  private final DiscountConditionType type;
   private final DayOfWeek dayOfWeek;
   private final LocalTime startTime;
   private final LocalTime endTime;
+  private int sequence;
 
   @Override
   public boolean isSatisfiedBy(Screening screening) {

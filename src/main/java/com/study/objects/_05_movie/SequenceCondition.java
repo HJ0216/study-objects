@@ -5,11 +5,11 @@ import lombok.RequiredArgsConstructor;
 @RequiredArgsConstructor
 public class SequenceCondition implements DiscountCondition {
 
+  private final DiscountConditionType type;
   private final int sequence;
 
   @Override
   public boolean isSatisfiedBy(Screening screening) {
     return screening.getSequence() == sequence;
   }
-
 }
