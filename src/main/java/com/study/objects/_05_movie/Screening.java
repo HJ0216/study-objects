@@ -2,13 +2,15 @@ package com.study.objects._05_movie;
 
 import java.time.LocalDateTime;
 import lombok.Getter;
+import lombok.RequiredArgsConstructor;
 
 @Getter
+@RequiredArgsConstructor
 public class Screening {
 
-  private Movie movie;
-  private int sequence;
-  private LocalDateTime whenScreened;
+  private final Movie movie;
+  private final int sequence;
+  private final LocalDateTime whenScreened;
 
   public Reservation reserve(Customer customer, int audienceCount){
     return new Reservation(customer, this, calculateFee(audienceCount), audienceCount);

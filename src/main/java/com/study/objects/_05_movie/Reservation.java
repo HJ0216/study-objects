@@ -1,7 +1,9 @@
 package com.study.objects._05_movie;
 
+import lombok.Getter;
 import lombok.RequiredArgsConstructor;
 
+@Getter
 @RequiredArgsConstructor
 public class Reservation {
 

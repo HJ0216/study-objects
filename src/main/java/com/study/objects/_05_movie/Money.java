@@ -26,4 +26,8 @@ public class Money {
     return new Money(this.amount.multiply(BigDecimal.valueOf(multiplier)));
   }
 
+  public Money times(BigDecimal multiplier) {
+    return new Money(this.amount.multiply(multiplier));
+  }
+
 }
