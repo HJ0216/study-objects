@@ -24,34 +24,24 @@ public class Salary {
 
   public SalaryResponse totalBasePay() {
     BigDecimal sum = sumBasePay();
-    return toResponse("TOTAL", sum);
+    return toResponse("TOTAL BASE PAY", sum);
   }
 
   public SalaryResponse totalMonthlyPay() {
     BigDecimal sum = sumMonthlyPay();
-    return toResponse("TOTAL", sum);
+    return toResponse("TOTAL MONTHLY PAY", sum);
   }
 
   private BigDecimal sumBasePay() {
-    BigDecimal sum = BigDecimal.ZERO;
-
-    for (Employee employee : employees) {
-      if (!employee.isHourly()) {
-        sum = sum.add(employee.getBasePay());
-      }
-    }
-
-    return sum;
+    return employees.stream()
+                    .map(Employee::getBasePay)
+                    .reduce(BigDecimal.ZERO, BigDecimal::add);
   }
 
   private BigDecimal sumMonthlyPay() {
-    BigDecimal sum = BigDecimal.ZERO;
-
-    for (Employee employee : employees) {
-      sum = sum.add(employee.getMonthlyPay());
-    }
-
-    return sum;
+    return employees.stream()
+                    .map(Employee::getMonthlyPay)
+                    .reduce(BigDecimal.ZERO, BigDecimal::add);
   }
 
   private SalaryResponse toResponse(String name, BigDecimal pay) {

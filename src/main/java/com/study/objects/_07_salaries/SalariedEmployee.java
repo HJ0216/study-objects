@@ -5,12 +5,17 @@ import java.math.BigDecimal;
 public class SalariedEmployee extends Employee {
 
   public SalariedEmployee(String name, BigDecimal basePay) {
-    super(name, basePay, false, BigDecimal.ZERO);
+    super(name, basePay);
   }
 
   @Override
   public BigDecimal getTaxRate() {
-    return BigDecimal.TEN;
+    return new BigDecimal("0.10");
+  }
+
+  @Override
+  public BigDecimal getBasePay() {
+    return getBasePay();
   }
 
   @Override

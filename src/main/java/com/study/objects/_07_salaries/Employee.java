@@ -9,10 +9,9 @@ import lombok.RequiredArgsConstructor;
 public abstract class Employee {
   private final String name;
   private final BigDecimal basePay;
-  private final boolean hourly;
-  private final BigDecimal workingHours;
 
   public abstract BigDecimal getTaxRate();
+  public abstract BigDecimal getBasePay();
   public abstract BigDecimal getMonthlyPay();
 
 }

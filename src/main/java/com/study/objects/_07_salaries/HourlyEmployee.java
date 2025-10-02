@@ -4,8 +4,11 @@ import java.math.BigDecimal;
 
 public class HourlyEmployee extends Employee {
 
+  private final BigDecimal workingHours;
+
   public HourlyEmployee(String name, BigDecimal basePay, BigDecimal workingHours) {
-    super(name, basePay, true, workingHours);
+    super(name, basePay);
+    this.workingHours = workingHours;
   }
 
   @Override
@@ -14,8 +17,13 @@ public class HourlyEmployee extends Employee {
   }
 
   @Override
+  public BigDecimal getBasePay() {
+    return BigDecimal.ZERO;
+  }
+
+  @Override
   public BigDecimal getMonthlyPay() {
-    BigDecimal pay = getBasePay().multiply(getWorkingHours());
+    BigDecimal pay = getBasePay().multiply(workingHours);
 
     return pay.multiply(BigDecimal.ONE.subtract(getTaxRate()));
   }
