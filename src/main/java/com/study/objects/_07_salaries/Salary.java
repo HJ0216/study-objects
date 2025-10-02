@@ -7,34 +7,37 @@ import java.util.List;
 
 public class Salary {
 
-  private List<String> employees = new ArrayList<>(
-      Arrays.asList("Employee1", "Employee2", "Employee3", "PartTime1", "PartTime2", "PartTime3"));
-  private List<BigDecimal> basePays =
-      new ArrayList<>(
-          Arrays.asList(BigDecimal.valueOf(400), BigDecimal.valueOf(300), BigDecimal.valueOf(250),
-              BigDecimal.valueOf(1), BigDecimal.valueOf(1), BigDecimal.valueOf(1.5)));
-  private List<Boolean> hourlys = new ArrayList<>(
-      Arrays.asList(false, false, false, true, true, true));
-  private List<BigDecimal> timeCards =
-      new ArrayList<>(Arrays.asList(BigDecimal.ZERO, BigDecimal.ZERO, BigDecimal.ZERO,
-          BigDecimal.valueOf(120), BigDecimal.valueOf(120), BigDecimal.valueOf(100)));
+  private final List<Employee> employees = new ArrayList<>(
+      Arrays.asList(
+          new Employee("Employee1", BigDecimal.valueOf(400), false, BigDecimal.ZERO),
+          new Employee("Employee2", BigDecimal.valueOf(300), false, BigDecimal.ZERO),
+          new Employee("Employee3", BigDecimal.valueOf(250), false, BigDecimal.ZERO),
+          new Employee("PartTime1", BigDecimal.valueOf(1), true, BigDecimal.valueOf(120)),
+          new Employee("PartTime2", BigDecimal.valueOf(1), true, BigDecimal.valueOf(120)),
+          new Employee("PartTime3", BigDecimal.valueOf(1.5), true, BigDecimal.valueOf(100))
+      )
+  );
 
-  public SalaryResponse calculatePay(String name) {
-    BigDecimal taxRate = getTaxRate(name);
-    BigDecimal pay = calculatePay(name, taxRate);
-    return toResponse(name, pay);
+  public SalaryResponse calculatePay(Employee employee) {
+    BigDecimal taxRate = getTaxRate(employee.hourly());
+    BigDecimal pay = calculatePay(employee, taxRate);
+    return toResponse(employee.name(), pay);
   }
 
-  private BigDecimal calculatePay(String name, BigDecimal taxRate) {
-    if (isHourly(name)) {
-      return calculatePartTimePay(name, taxRate);
+  private BigDecimal calculatePay(Employee employee, BigDecimal taxRate) {
+    if (isHourly(employee.name())) {
+      return calculatePartTimePay(employee, taxRate);
     }
 
-    return calculateEmployeePay(name, taxRate);
+    return calculateEmployeePay(employee, taxRate);
   }
 
   private boolean isHourly(String name) {
-    return hourlys.get(employees.indexOf(name));
+    return employees.stream()
+                    .filter(e -> e.name().equals(name))
+                    .map(Employee::hourly)
+                    .findFirst()
+                    .orElse(false);
   }
 
   public SalaryResponse totalBasePay() {
@@ -45,10 +48,9 @@ public class Salary {
   private BigDecimal sumBasePay() {
     BigDecimal sum = BigDecimal.ZERO;
 
-    for (int i = 0; i < basePays.size(); i++) {
-      String name = employees.get(i);
-      if (!isHourly(name)) {
-        sum = sum.add(basePays.get(i));
+    for (Employee employee : employees) {
+      if (!employee.hourly()) {
+        sum = sum.add(employee.basePay());
       }
     }
 
@@ -59,19 +61,19 @@ public class Salary {
     return new SalaryResponse(name, pay);
   }
 
-  private BigDecimal calculateEmployeePay(String name, BigDecimal taxRate) {
-    int index = employees.indexOf(name);
-    BigDecimal pay = basePays.get(index);
+  private BigDecimal calculateEmployeePay(Employee employee, BigDecimal taxRate) {
+    BigDecimal pay = employee.basePay();
+
     return pay.multiply(BigDecimal.ONE.subtract(taxRate));
   }
 
-  private BigDecimal calculatePartTimePay(String name, BigDecimal taxRate) {
-    int index = employees.indexOf(name);
-    BigDecimal pay = basePays.get(index).multiply(timeCards.get((index)));
+  private BigDecimal calculatePartTimePay(Employee employee, BigDecimal taxRate) {
+    BigDecimal pay = employee.basePay().multiply(employee.workingHours());
+
     return pay.multiply(BigDecimal.ONE.subtract(taxRate));
   }
 
-  private BigDecimal getTaxRate(String tax) {
-    return new BigDecimal(tax);
+  private BigDecimal getTaxRate(boolean hourly) {
+    return hourly ? BigDecimal.ZERO : BigDecimal.TEN;
   }
 }
